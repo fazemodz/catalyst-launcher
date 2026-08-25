@@ -1,0 +1,49 @@
+<Window x:Class="Catalyst_Launcher.Dialogs.DocViewerWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Documentation"
+        Width="900" Height="680"
+        MinWidth="600" MinHeight="420"
+        WindowStartupLocation="CenterOwner"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="{StaticResource FontDisplay}"
+        Foreground="{StaticResource TextPrimaryBrush}">
+
+    <Border Background="{StaticResource BgDeepBrush}"
+            BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1" SnapsToDevicePixels="True">
+        <DockPanel LastChildFill="True">
+
+            <!-- Title bar -->
+            <Border DockPanel.Dock="Top"
+                    Background="#081722"
+                    BorderBrush="{StaticResource StrokeSoftBrush}" BorderThickness="0,0,0,1"
+                    Height="34" MouseLeftButtonDown="TitleBar_MouseDown">
+                <Grid Margin="16,0,8,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <Path Width="16" Height="16" Stretch="None"
+                                Data="M2,14 L14,14 L14,2 Z M5.2,12.8 L12.8,12.8 L12.8,5.2 Z"
+                                Stroke="{StaticResource BrassBrush}" StrokeThickness="1.2"
+                                StrokeLineJoin="Round" SnapsToDevicePixels="True"/>
+                        <TextBlock x:Name="WindowTitleText" Text="Documentation"
+                                   Margin="10,0,0,0" FontSize="12.5" FontWeight="SemiBold"
+                                   Foreground="{StaticResource TextPrimaryBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <Button HorizontalAlignment="Right" VerticalAlignment="Center"
+                            Style="{StaticResource TitleCloseBtn}"
+                            Click="Close_Click" ToolTip="Close">
+                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconClose}"/>
+                    </Button>
+                </Grid>
+            </Border>
+            <FlowDocumentScrollViewer x:Name="DocViewer"
+                                      IsToolBarVisible="False"
+                                      VerticalScrollBarVisibility="Auto"
+                                      Background="#0A1C28"
+                                      Foreground="#C8DCE7"/>
+
+        </DockPanel>
+    </Border>
+</Window>

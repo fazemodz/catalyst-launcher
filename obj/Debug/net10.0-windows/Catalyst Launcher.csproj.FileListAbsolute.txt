@@ -1,0 +1,23 @@
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\Debug\net10.0-windows\Catalyst Launcher.exe
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\Debug\net10.0-windows\Catalyst Launcher.deps.json
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\Debug\net10.0-windows\Catalyst Launcher.runtimeconfig.json
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\Debug\net10.0-windows\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\Debug\net10.0-windows\Catalyst Launcher.pdb
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\MainWindow.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\App.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher_MarkupCompile.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\MainWindow.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.g.resources
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.AssemblyInfoInputs.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.AssemblyInfo.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.csproj.CoreCompileInputs.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.sourcelink.json
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\refint\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.pdb
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Catalyst Launcher.genruntimeconfig.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\ref\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Dialogs\NewProjectDialog.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\App.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\net10.0-windows\Dialogs\NewProjectDialog.g.cs

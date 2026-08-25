@@ -1,0 +1,1201 @@
+<Window x:Class="Catalyst_Launcher.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Catalyst Launcher"
+        Width="1320" Height="860"
+        MinWidth="1120" MinHeight="700"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="{StaticResource FontDisplay}"
+        Foreground="{StaticResource ChalkBrush}"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True">
+
+    <Window.Resources>
+
+        <!-- Section heading: a label, then a rule running out to the margin. -->
+        <Style x:Key="SectionRule" TargetType="Rectangle">
+            <Setter Property="Height"             Value="1"/>
+            <Setter Property="Fill"               Value="{StaticResource RuleSoftBrush}"/>
+            <Setter Property="VerticalAlignment"  Value="Center"/>
+            <Setter Property="Margin"             Value="12,0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <!-- One cell of the title block. -->
+        <Style x:Key="BlockCell" TargetType="Border">
+            <Setter Property="BorderBrush"      Value="{StaticResource RuleBrush}"/>
+            <Setter Property="BorderThickness"  Value="1,0,0,0"/>
+            <Setter Property="Padding"          Value="16,0"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <Style x:Key="BlockCaption" TargetType="TextBlock" BasedOn="{StaticResource Caption}">
+            <Setter Property="FontSize" Value="8.5"/>
+            <Setter Property="Margin"   Value="0,0,0,3"/>
+        </Style>
+
+        <Style x:Key="BlockValue" TargetType="TextBlock" BasedOn="{StaticResource Value}">
+            <Setter Property="FontSize"          Value="10.5"/>
+            <Setter Property="Foreground"        Value="{StaticResource GraphiteBrush}"/>
+            <Setter Property="TextTrimming"      Value="CharacterEllipsis"/>
+        </Style>
+
+        <!-- Learn card: icon plate, kind, title, one line on what it covers. -->
+        <Style x:Key="LearnCard" TargetType="Border">
+            <Setter Property="Background"       Value="{StaticResource PlateBrush}"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource RuleBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="Margin"           Value="0,0,12,12"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background"  Value="{StaticResource PlateHiBrush}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource SlateBrush}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="IconPlate" TargetType="Border">
+            <Setter Property="Width"            Value="34"/>
+            <Setter Property="Height"           Value="34"/>
+            <Setter Property="Background"       Value="{StaticResource FieldBrush}"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource RuleBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
+        <Style x:Key="CardTitle" TargetType="TextBlock">
+            <Setter Property="FontFamily"    Value="{StaticResource FontDisplay}"/>
+            <Setter Property="FontSize"      Value="14"/>
+            <Setter Property="FontWeight"    Value="SemiBold"/>
+            <Setter Property="Foreground"    Value="{StaticResource ChalkBrush}"/>
+            <Setter Property="TextTrimming"  Value="CharacterEllipsis"/>
+            <Setter Property="Margin"        Value="0,14,0,4"/>
+        </Style>
+
+        <Style x:Key="CardKind" TargetType="TextBlock" BasedOn="{StaticResource Value}">
+            <Setter Property="FontSize"            Value="9.5"/>
+            <Setter Property="Foreground"          Value="{StaticResource SlateBrush}"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment"   Value="Top"/>
+            <Setter Property="Margin"              Value="0,3,0,0"/>
+        </Style>
+
+        <Style x:Key="CardBlurb" TargetType="TextBlock" BasedOn="{StaticResource Body}">
+            <Setter Property="FontSize"   Value="11.5"/>
+            <Setter Property="LineHeight" Value="17"/>
+            <Setter Property="Foreground" Value="{StaticResource GraphiteBrush}"/>
+        </Style>
+
+        <!-- Documentation row -->
+        <Style x:Key="DocRow" TargetType="Border">
+            <Setter Property="Background"       Value="{StaticResource PlateBrush}"/>
+            <Setter Property="BorderBrush"      Value="{StaticResource RuleBrush}"/>
+            <Setter Property="BorderThickness"  Value="1"/>
+            <Setter Property="Margin"           Value="0,0,0,-1"/>
+            <Setter Property="Cursor"           Value="Hand"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background"  Value="{StaticResource PlateHiBrush}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource SlateBrush}"/>
+                    <Setter Property="Panel.ZIndex" Value="1"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Revision markup, shared by both index views. -->
+        <ContextMenu x:Key="SheetMenu">
+                <MenuItem Header="Set revision">
+                    <MenuItem Click="SetTag_Click" Tag="0">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="8" Height="8" Fill="#6FB6D8"
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="Prototype"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Click="SetTag_Click" Tag="1">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="8" Height="8" Fill="#4FA48D"
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="Production"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Click="SetTag_Click" Tag="2">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="8" Height="8" Fill="#B08BD8"
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="Test"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                    <MenuItem Click="SetTag_Click" Tag="3">
+                        <MenuItem.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle Width="8" Height="8" Fill="#C08A5A"
+                                           VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBlock Text="Archived"/>
+                            </StackPanel>
+                        </MenuItem.Header>
+                    </MenuItem>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Click="DeleteProject_Click">
+                    <MenuItem.Header>
+                        <TextBlock Text="Remove from index"
+                                   Foreground="{StaticResource RedlineBrush}"/>
+                    </MenuItem.Header>
+                </MenuItem>
+        </ContextMenu>
+
+        <!-- Index card: the grid view. -->
+        <DataTemplate x:Key="SheetCardTemplate">
+            <Border x:Name="Card" Margin="0,0,12,12"
+                    Background="{StaticResource PlateBrush}"
+                    BorderBrush="{StaticResource RuleBrush}"
+                    BorderThickness="1"
+                    SnapsToDevicePixels="True"
+                    Cursor="Hand"
+                    MouseLeftButtonUp="ProjectCard_Click"
+                    ContextMenu="{StaticResource SheetMenu}"
+                    Tag="{Binding}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Border x:Name="FaultBar" Grid.Row="0" Height="2"
+                            VerticalAlignment="Top"
+                            Background="{StaticResource RedlineBrush}"
+                            Visibility="Collapsed"/>
+
+                    <Grid Grid.Row="0" Margin="16,18,16,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Border Grid.Column="0" Width="38" Height="38"
+                                Background="{Binding TagBg}"
+                                BorderBrush="{Binding TagFg}" BorderThickness="1"
+                                VerticalAlignment="Top"
+                                SnapsToDevicePixels="True">
+                            <TextBlock Text="{Binding ThumbLabel}"
+                                       FontFamily="{StaticResource FontMono}"
+                                       FontSize="14"
+                                       Foreground="{Binding TagFg}"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"/>
+                        </Border>
+
+                        <StackPanel Grid.Column="1" Margin="13,0,10,0"
+                                    VerticalAlignment="Top">
+                            <TextBlock Text="{Binding Name}"
+                                       FontSize="14.5" FontWeight="SemiBold"
+                                       Foreground="{StaticResource ChalkBrush}"
+                                       TextTrimming="CharacterEllipsis"/>
+                            <TextBlock Text="{Binding PathStamp}"
+                                       ToolTip="{Binding Path}"
+                                       FontFamily="{StaticResource FontMono}"
+                                       FontSize="10"
+                                       Foreground="{StaticResource SlateBrush}"
+                                       TextTrimming="CharacterEllipsis"
+                                       Margin="0,4,0,0"/>
+                        </StackPanel>
+
+                        <Button Grid.Column="2"
+                                Style="{StaticResource CardOpenButton}"
+                                Width="28" Height="28" Padding="0"
+                                VerticalAlignment="Top"
+                                IsEnabled="{Binding Exists}"
+                                Tag="{Binding Path}"
+                                ToolTip="Open project"
+                                Click="OpenProjectCard_Click">
+                            <Path Style="{StaticResource Icon}"
+                                  Data="{StaticResource IconArrow}"/>
+                        </Button>
+                    </Grid>
+
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Border Grid.Column="0"
+                                BorderBrush="{StaticResource RuleSoftBrush}"
+                                BorderThickness="0,1,1,0" Padding="16,7,8,9">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource BlockCaption}" Text="REV"/>
+                                <TextBlock Text="{Binding TagStamp}"
+                                           FontFamily="{StaticResource FontMono}"
+                                           FontSize="10"
+                                           Foreground="{Binding TagFg}"/>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="1"
+                                BorderBrush="{StaticResource RuleSoftBrush}"
+                                BorderThickness="0,1,0,0" Padding="16,7,8,9">
+                            <StackPanel>
+                                <TextBlock Style="{StaticResource BlockCaption}" Text="MODIFIED"/>
+                                <TextBlock x:Name="DateCell"
+                                           Text="{Binding DateStamp}"
+                                           FontFamily="{StaticResource FontMono}"
+                                           FontSize="10"
+                                           Foreground="{StaticResource GraphiteBrush}"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <DataTemplate.Triggers>
+                <Trigger SourceName="Card" Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Card" Property="Background"
+                            Value="{StaticResource PlateHiBrush}"/>
+                    <Setter TargetName="Card" Property="BorderBrush"
+                            Value="{StaticResource SlateBrush}"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding Exists}" Value="False">
+                    <Setter TargetName="FaultBar" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="DateCell" Property="Text" Value="NOT ON DISK"/>
+                    <Setter TargetName="DateCell" Property="Foreground"
+                            Value="{StaticResource RedlineBrush}"/>
+                    <Setter TargetName="Card" Property="Opacity" Value="0.62"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <!-- Index row: the list view, one line per sheet like a real index. -->
+        <DataTemplate x:Key="SheetRowTemplate">
+            <Border x:Name="Row" Margin="0,0,0,-1"
+                    Background="{StaticResource PlateBrush}"
+                    BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                    SnapsToDevicePixels="True"
+                    Cursor="Hand"
+                    MouseLeftButtonUp="ProjectCard_Click"
+                    ContextMenu="{StaticResource SheetMenu}"
+                    Tag="{Binding}">
+                <Grid Height="56">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="230"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="140"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border x:Name="FaultBar" Grid.Column="0" Width="2"
+                            HorizontalAlignment="Left"
+                            Background="{StaticResource RedlineBrush}"
+                            Visibility="Collapsed"/>
+
+                    <Border Grid.Column="0" Width="32" Height="32" Margin="16,0,0,0"
+                            Background="{Binding TagBg}"
+                            BorderBrush="{Binding TagFg}" BorderThickness="1"
+                            VerticalAlignment="Center"
+                            SnapsToDevicePixels="True">
+                        <TextBlock Text="{Binding ThumbLabel}"
+                                   FontFamily="{StaticResource FontMono}" FontSize="12"
+                                   Foreground="{Binding TagFg}"
+                                   HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+
+                    <TextBlock Grid.Column="1" Text="{Binding Name}"
+                               Margin="14,0,12,0" VerticalAlignment="Center"
+                               FontSize="14" FontWeight="SemiBold"
+                               Foreground="{StaticResource ChalkBrush}"
+                               TextTrimming="CharacterEllipsis"/>
+
+                    <TextBlock Grid.Column="2" Text="{Binding PathStamp}"
+                               ToolTip="{Binding Path}"
+                               Margin="0,0,16,0" VerticalAlignment="Center"
+                               FontFamily="{StaticResource FontMono}" FontSize="10.5"
+                               Foreground="{StaticResource SlateBrush}"
+                               TextTrimming="CharacterEllipsis"/>
+
+                    <Border Grid.Column="3" Padding="16,0"
+                            BorderBrush="{StaticResource RuleSoftBrush}" BorderThickness="1,0,0,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="REV"/>
+                            <TextBlock Text="{Binding TagStamp}"
+                                       FontFamily="{StaticResource FontMono}" FontSize="10"
+                                       Foreground="{Binding TagFg}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="4" Padding="16,0"
+                            BorderBrush="{StaticResource RuleSoftBrush}" BorderThickness="1,0,0,0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="MODIFIED"/>
+                            <TextBlock x:Name="DateCell" Text="{Binding DateStamp}"
+                                       FontFamily="{StaticResource FontMono}" FontSize="10"
+                                       Foreground="{StaticResource GraphiteBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Grid.Column="5" Margin="10,0,16,0"
+                            Style="{StaticResource CardOpenButton}"
+                            Width="28" Height="28" Padding="0"
+                            IsEnabled="{Binding Exists}"
+                            Tag="{Binding Path}"
+                            ToolTip="Open project"
+                            Click="OpenProjectCard_Click">
+                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconArrow}"/>
+                    </Button>
+                </Grid>
+            </Border>
+
+            <DataTemplate.Triggers>
+                <Trigger SourceName="Row" Property="IsMouseOver" Value="True">
+                    <Setter TargetName="Row" Property="Background" Value="{StaticResource PlateHiBrush}"/>
+                    <Setter TargetName="Row" Property="BorderBrush" Value="{StaticResource SlateBrush}"/>
+                    <Setter TargetName="Row" Property="Panel.ZIndex" Value="1"/>
+                </Trigger>
+                <DataTrigger Binding="{Binding Exists}" Value="False">
+                    <Setter TargetName="FaultBar" Property="Visibility" Value="Visible"/>
+                    <Setter TargetName="DateCell" Property="Text" Value="NOT ON DISK"/>
+                    <Setter TargetName="DateCell" Property="Foreground" Value="{StaticResource RedlineBrush}"/>
+                    <Setter TargetName="Row" Property="Opacity" Value="0.62"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+    </Window.Resources>
+
+    <Border Background="{StaticResource InkBrush}"
+            BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+            SnapsToDevicePixels="True">
+        <Border.Triggers>
+            <EventTrigger RoutedEvent="Loaded">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                         From="0" To="1" Duration="0:0:0.22"/>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Border.Triggers>
+
+        <DockPanel LastChildFill="True">
+
+            <!-- =========================================================
+                 TITLE RAIL
+                 ========================================================= -->
+            <Border DockPanel.Dock="Top"
+                    Background="{StaticResource RailBrush}"
+                    BorderBrush="{StaticResource RuleBrush}" BorderThickness="0,0,0,1"
+                    Height="34"
+                    MouseLeftButtonDown="TitleBar_MouseDown">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Set-square mark -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal"
+                                VerticalAlignment="Center" Margin="14,0,0,0">
+                        <Path Width="16" Height="16" Stretch="None"
+                              Data="M2,14 L14,14 L14,2 Z M5.2,12.8 L12.8,12.8 L12.8,5.2 Z"
+                              Stroke="{StaticResource BrassBrush}" StrokeThickness="1.2"
+                              StrokeLineJoin="Round" SnapsToDevicePixels="True"/>
+                        <TextBlock Text="CATALYST" Margin="10,0,0,0"
+                                   FontSize="11.5" FontWeight="Bold" FontStretch="SemiCondensed"
+                                   Foreground="{StaticResource ChalkBrush}"
+                                   VerticalAlignment="Center"/>
+                        <TextBlock Text="LAUNCHER" Margin="6,0,0,0"
+                                   FontFamily="{StaticResource FontMono}" FontSize="9.5"
+                                   Foreground="{StaticResource SlateBrush}"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Margin="26,0,0,0">
+                        <RadioButton Content="Projects"    Style="{StaticResource TopTab}" IsChecked="True" GroupName="TopTabs" Checked="Tab_Projects_Checked"/>
+                        <RadioButton Content="Learn"       Style="{StaticResource TopTab}" GroupName="TopTabs" Checked="Tab_Learn_Checked"/>
+                        <RadioButton Content="Marketplace" Style="{StaticResource TopTab}" GroupName="TopTabs" Checked="Tab_Marketplace_Checked"/>
+                        <RadioButton Content="Community"   Style="{StaticResource TopTab}" GroupName="TopTabs" Checked="Tab_Community_Checked"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="3" Orientation="Horizontal">
+                        <Button Style="{StaticResource TitleIconBtn}" Click="Settings_Click" ToolTip="Settings">
+                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconNut}"/>
+                        </Button>
+                        <Button Style="{StaticResource TitleIconBtn}" Click="Min_Click" ToolTip="Minimise">
+                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconMinimize}"/>
+                        </Button>
+                        <Button Style="{StaticResource TitleIconBtn}" Click="Max_Click" ToolTip="Maximise">
+                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconMaximize}"/>
+                        </Button>
+                        <Button Style="{StaticResource TitleCloseBtn}" Click="Close_Click" ToolTip="Close">
+                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconClose}"/>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- =========================================================
+                 TITLE BLOCK
+                 The ruled table at the foot of every engineering drawing.
+                 Everything the launcher knows about the engine lives here.
+                 ========================================================= -->
+            <Border DockPanel.Dock="Bottom"
+                    Background="{StaticResource RailBrush}"
+                    BorderBrush="{StaticResource RuleBrush}" BorderThickness="0,1,0,0"
+                    Height="48">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Border Grid.Column="0" Style="{StaticResource BlockCell}" BorderThickness="0">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="ENGINE"/>
+                            <TextBlock Style="{StaticResource BlockValue}" Text="CATALYST"
+                                       Foreground="{StaticResource ChalkBrush}"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="1" Style="{StaticResource BlockCell}">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="BUILD"/>
+                            <TextBlock Style="{StaticResource BlockValue}" Text="0.0.1 DEV"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="2" Style="{StaticResource BlockCell}">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="TARGET"/>
+                            <TextBlock Style="{StaticResource BlockValue}" Text="x64 DIRECTX 12"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="3" Style="{StaticResource BlockCell}">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="ENGINE BINARY"/>
+                            <TextBlock x:Name="EnginePathStatusLabel"
+                                       Style="{StaticResource BlockValue}"
+                                       Text="Not located"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="4" Style="{StaticResource BlockCell}" MinWidth="150">
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Style="{StaticResource BlockCaption}" Text="STATUS"/>
+                            <StackPanel Orientation="Horizontal">
+                                <Rectangle x:Name="EngineLamp" Width="7" Height="7"
+                                           Fill="{StaticResource SlateBrush}"
+                                           VerticalAlignment="Center" Margin="0,0,7,0"
+                                           SnapsToDevicePixels="True"/>
+                                <TextBlock x:Name="EngineStateLabel"
+                                           Style="{StaticResource BlockValue}"
+                                           Text="CHECKING"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Grid.Column="5" Style="{StaticResource BlockCell}" MinWidth="184">
+                        <Grid>
+                            <Grid x:Name="UserInfoArea" Visibility="Collapsed" VerticalAlignment="Center">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Width="26" Height="26"
+                                        Background="{StaticResource FieldBrush}"
+                                        BorderBrush="{StaticResource BrassBrush}" BorderThickness="1"
+                                        SnapsToDevicePixels="True">
+                                    <TextBlock x:Name="UserInitialLabel" Text="?"
+                                               FontFamily="{StaticResource FontMono}" FontSize="12"
+                                               Foreground="{StaticResource BrassBrush}"
+                                               HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                    <TextBlock Style="{StaticResource BlockCaption}" Text="DRAWN BY"/>
+                                    <TextBlock x:Name="UserNameLabel" Text=""
+                                               Style="{StaticResource BlockValue}"
+                                               Foreground="{StaticResource ChalkBrush}"/>
+                                </StackPanel>
+                            </Grid>
+                            <Button x:Name="LoginPromptBtn"
+                                    Content="Sign in"
+                                    Style="{StaticResource GhostButton}"
+                                    Padding="16,5" FontSize="11.5"
+                                    HorizontalAlignment="Left" VerticalAlignment="Center"
+                                    Visibility="Collapsed"
+                                    Click="LoginPrompt_Click"/>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+
+            <!-- =========================================================
+                 BODY
+                 ========================================================= -->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition x:Name="RailColumn" Width="236"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- ============ INDEX RAIL ============ -->
+                <Border x:Name="IndexRail" Grid.Column="0"
+                        Background="{StaticResource SheetBrush}"
+                        BorderBrush="{StaticResource RuleBrush}"
+                        BorderThickness="0,0,1,0">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="0,0,0,18">
+
+                                <Grid Margin="0,20,14,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Caption}"
+                                               Text="SHEETS" Margin="18,0,0,0"/>
+                                    <Rectangle Grid.Column="1" Style="{StaticResource SectionRule}"/>
+                                </Grid>
+
+                                <RadioButton x:Name="FilterAll" Style="{StaticResource SidebarNav}"
+                                             GroupName="Lib" IsChecked="True"
+                                             Tag="all" Checked="Filter_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconSheets}"
+                                              Stroke="{StaticResource SlateBrush}" Margin="0,0,12,0"/>
+                                        <TextBlock Text="All projects" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Style="{StaticResource SidebarNav}" GroupName="Lib"
+                                             Tag="recent" Checked="Filter_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconClock}"
+                                              Stroke="{StaticResource SlateBrush}" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Opened this month" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+                                <RadioButton Style="{StaticResource SidebarNav}" GroupName="Lib"
+                                             Tag="missing" Checked="Filter_Checked">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconFlag}"
+                                              Stroke="{StaticResource SlateBrush}" Margin="0,0,12,0"/>
+                                        <TextBlock Text="Not on disk" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </RadioButton>
+
+                                <Grid Margin="0,22,14,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Caption}"
+                                               Text="LEGEND" Margin="18,0,0,0"/>
+                                    <Rectangle Grid.Column="1" Style="{StaticResource SectionRule}"/>
+                                </Grid>
+
+                                <Button Style="{StaticResource SidebarTag}" Tag="Prototype" Click="LegendFilter_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="9" Height="9" Fill="{StaticResource InkCyanBrush}"
+                                                   VerticalAlignment="Center" Margin="0,0,11,0"
+                                                   SnapsToDevicePixels="True"/>
+                                        <TextBlock Text="Prototype" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource SidebarTag}" Tag="Production" Click="LegendFilter_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="9" Height="9" Fill="{StaticResource VerdigrisBrush}"
+                                                   VerticalAlignment="Center" Margin="0,0,11,0"
+                                                   SnapsToDevicePixels="True"/>
+                                        <TextBlock Text="Production" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource SidebarTag}" Tag="Test" Click="LegendFilter_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="9" Height="9" Fill="{StaticResource InkVioletBrush}"
+                                                   VerticalAlignment="Center" Margin="0,0,11,0"
+                                                   SnapsToDevicePixels="True"/>
+                                        <TextBlock Text="Test" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                                <Button Style="{StaticResource SidebarTag}" Tag="Archived" Click="LegendFilter_Click">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Rectangle Width="9" Height="9" Fill="{StaticResource InkBronzeBrush}"
+                                                   VerticalAlignment="Center" Margin="0,0,11,0"
+                                                   SnapsToDevicePixels="True"/>
+                                        <TextBlock Text="Archived" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+
+                <!-- ============ SHEET ============ -->
+                <Grid Grid.Column="1" Background="{StaticResource SheetBrush}">
+                    <Rectangle Fill="{StaticResource DraftingGridBrush}" IsHitTestVisible="False"/>
+
+                    <!-- ──────────── PROJECTS ──────────── -->
+                    <DockPanel x:Name="ProjectsContent" LastChildFill="True">
+
+                        <Border DockPanel.Dock="Top"
+                                BorderBrush="{StaticResource RuleBrush}" BorderThickness="0,0,0,1"
+                                Padding="28,0" Height="76">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                    <TextBlock Style="{StaticResource SheetTitle}" Text="Projects"/>
+                                    <TextBlock x:Name="FilterLabel" Style="{StaticResource Value}"
+                                               FontSize="10" Foreground="{StaticResource SlateBrush}"
+                                               Text="ALL SHEETS" Margin="0,5,0,0"/>
+                                </StackPanel>
+
+                                <Border Grid.Column="1" Width="300" HorizontalAlignment="Left"
+                                        Margin="34,0,0,0"
+                                        Background="{StaticResource FieldBrush}"
+                                        BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                                        VerticalAlignment="Center" Height="32"
+                                        SnapsToDevicePixels="True">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Path Grid.Column="0" Style="{StaticResource Icon}"
+                                              Data="{StaticResource IconSearch}"
+                                              Stroke="{StaticResource SlateBrush}" Margin="9,0,0,0"/>
+                                        <Grid Grid.Column="1">
+                                            <TextBlock x:Name="SearchHint" Text="Filter by name or path"
+                                                       FontFamily="{StaticResource FontMono}" FontSize="11"
+                                                       Foreground="{StaticResource SlateBrush}"
+                                                       VerticalAlignment="Center" Margin="9,0,0,0"
+                                                       IsHitTestVisible="False"/>
+                                            <TextBox x:Name="SearchInput"
+                                                     Background="Transparent" BorderThickness="0"
+                                                     Foreground="{StaticResource ChalkBrush}"
+                                                     CaretBrush="{StaticResource BrassBrush}"
+                                                     FontFamily="{StaticResource FontMono}" FontSize="11"
+                                                     Padding="9,0" VerticalContentAlignment="Center"
+                                                     TextChanged="Search_TextChanged"/>
+                                        </Grid>
+                                    </Grid>
+                                </Border>
+
+                                <Button Grid.Column="3" x:Name="SortBtn" Style="{StaticResource GhostButton}"
+                                        Margin="0,0,8,0" Click="Sort_Click"
+                                        VerticalAlignment="Center" Height="32">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconSort}"
+                                              Margin="0,0,8,0"/>
+                                        <TextBlock x:Name="SortLabel" Text="Recent" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Border Grid.Column="4" Margin="0,0,8,0"
+                                        BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                                        VerticalAlignment="Center" Height="32" SnapsToDevicePixels="True">
+                                    <StackPanel Orientation="Horizontal">
+                                        <RadioButton Style="{StaticResource ViewToggle}" GroupName="View"
+                                                     IsChecked="True" Checked="ViewGrid_Checked" ToolTip="Grid">
+                                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconGrid}"/>
+                                        </RadioButton>
+                                        <RadioButton Style="{StaticResource ViewToggle}" GroupName="View"
+                                                     Checked="ViewList_Checked" ToolTip="List">
+                                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconList}"/>
+                                        </RadioButton>
+                                    </StackPanel>
+                                </Border>
+
+                                <Button Grid.Column="5" Style="{StaticResource GhostButton}"
+                                        Margin="0,0,8,0" Click="Open_Click"
+                                        VerticalAlignment="Center" Height="32">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconFolder}"
+                                              Margin="0,0,8,0"/>
+                                        <TextBlock Text="Open project" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Grid.Column="6" Style="{StaticResource OrangeButton}"
+                                        Click="NewProject_Click"
+                                        VerticalAlignment="Center" Height="32">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconPlus}"
+                                              Margin="0,0,8,0"/>
+                                        <TextBlock Text="New project" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Button>
+                            </Grid>
+                        </Border>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="28,24,28,28">
+
+                                <!-- Bulletin. Hidden unless there is news to carry. -->
+                                <Border x:Name="HubNewsSection"
+                                        Background="{StaticResource PlateBrush}"
+                                        BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                                        Padding="24,20" Margin="0,0,0,24"
+                                        SnapsToDevicePixels="True">
+                                    <StackPanel MaxWidth="620" HorizontalAlignment="Left">
+                                        <TextBlock x:Name="ReleaseText"
+                                                   Style="{StaticResource Value}" FontSize="10"
+                                                   Foreground="{StaticResource BrassBrush}"/>
+                                        <TextBlock x:Name="NewsTitle"
+                                                   FontSize="24" FontWeight="Bold" FontStretch="SemiCondensed"
+                                                   Margin="0,8,0,6"
+                                                   Foreground="{StaticResource ChalkBrush}"/>
+                                        <TextBlock x:Name="NewsSmallDescription"
+                                                   Style="{StaticResource Body}"/>
+                                        <StackPanel Orientation="Horizontal" Margin="0,16,0,0">
+                                            <Button x:Name="NewsBTNMewProject"
+                                                    Style="{StaticResource OrangeButton}"
+                                                    Content="New project" Click="NewProject_Click"/>
+                                            <Button x:Name="NewsReadReleaseNotes"
+                                                    Style="{StaticResource GhostButton}"
+                                                    Margin="10,0,0,0" Content="Read release notes"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <Grid x:Name="ProjectSection" Margin="0,0,0,16">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Caption}"
+                                               Text="DRAWING INDEX" VerticalAlignment="Center"/>
+                                    <Rectangle Grid.Column="1" Style="{StaticResource SectionRule}"/>
+                                    <TextBlock Grid.Column="2" x:Name="ProjectCountLabel"
+                                               Style="{StaticResource Value}" FontSize="10"
+                                               Foreground="{StaticResource SlateBrush}"
+                                               VerticalAlignment="Center"/>
+                                </Grid>
+
+                                <!-- Empty sheet -->
+                                <Border x:Name="EmptyState" Visibility="Collapsed"
+                                        BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                                        Background="#0A2130" Padding="0,56"
+                                        SnapsToDevicePixels="True">
+                                    <StackPanel HorizontalAlignment="Center" MaxWidth="420">
+                                        <Border Style="{StaticResource IconPlate}" Width="40" Height="40"
+                                                HorizontalAlignment="Center">
+                                            <Path Style="{StaticResource Icon}" Data="{StaticResource IconSheets}"
+                                                  Stroke="{StaticResource SlateBrush}"/>
+                                        </Border>
+                                        <TextBlock x:Name="EmptyTitle" Text="Nothing filed here yet"
+                                                   FontSize="17" FontWeight="SemiBold"
+                                                   Foreground="{StaticResource ChalkBrush}"
+                                                   HorizontalAlignment="Center" Margin="0,18,0,0"/>
+                                        <TextBlock x:Name="EmptyBody" Style="{StaticResource Body}"
+                                                   Text="Start a new project, or open a .CatalystProj file already on disk."
+                                                   TextAlignment="Center" Margin="0,7,0,22"/>
+                                        <StackPanel x:Name="EmptyActions" Orientation="Horizontal" HorizontalAlignment="Center">
+                                            <Button Style="{StaticResource OrangeButton}"
+                                                    Content="New project" Click="NewProject_Click"/>
+                                            <Button Style="{StaticResource GhostButton}" Margin="10,0,0,0"
+                                                    Content="Open project" Click="Open_Click"/>
+                                        </StackPanel>
+                                    </StackPanel>
+                                </Border>
+
+                                <ItemsControl x:Name="ProjectGrid"
+                                              ItemTemplate="{StaticResource SheetCardTemplate}">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <UniformGrid Columns="4"/>
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+
+                    <!-- ──────────── LEARN ──────────── -->
+                    <DockPanel x:Name="LearnContent" Visibility="Collapsed" LastChildFill="True">
+
+                        <Border DockPanel.Dock="Top"
+                                BorderBrush="{StaticResource RuleBrush}" BorderThickness="0,0,0,1"
+                                Padding="44,0" Height="76">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource SheetTitle}" Text="Learn"/>
+                                <TextBlock Style="{StaticResource Value}" FontSize="10"
+                                           Foreground="{StaticResource SlateBrush}"
+                                           Text="TUTORIALS, GUIDES, API REFERENCE" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                      HorizontalScrollBarVisibility="Disabled">
+                            <StackPanel Margin="44,26,44,32">
+
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Caption}"
+                                               Text="GETTING STARTED" VerticalAlignment="Center"/>
+                                    <Rectangle Grid.Column="1" Style="{StaticResource SectionRule}"/>
+                                </Grid>
+
+                                <UniformGrid Columns="3" Margin="0,0,0,20">
+                                    <Border Style="{StaticResource LearnCard}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="card:hello-catalyst">
+                                        <StackPanel Margin="18">
+                                            <Grid>
+                                                <Border Style="{StaticResource IconPlate}">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource IconTerminal}"
+                                                          Stroke="{StaticResource BrassBrush}"/>
+                                                </Border>
+                                                <TextBlock Style="{StaticResource CardKind}" Text="TUTORIAL"/>
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="Hello, Catalyst"/>
+                                            <TextBlock Style="{StaticResource CardBlurb}"
+                                                       Text="Build the engine, create a project, and open it in the editor."/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource LearnCard}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="card:first-scene">
+                                        <StackPanel Margin="18">
+                                            <Grid>
+                                                <Border Style="{StaticResource IconPlate}">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource IconCamera}"
+                                                          Stroke="{StaticResource BrassBrush}"/>
+                                                </Border>
+                                                <TextBlock Style="{StaticResource CardKind}" Text="TUTORIAL"/>
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="Your first scene"/>
+                                            <TextBlock Style="{StaticResource CardBlurb}"
+                                                       Text="Place meshes and lights, aim a camera, and preview in the viewport."/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource LearnCard}" Margin="0,0,0,12"
+                                            MouseLeftButtonDown="Learn_Click" Tag="card:editor-overview">
+                                        <StackPanel Margin="18">
+                                            <Grid>
+                                                <Border Style="{StaticResource IconPlate}">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource IconLayers}"
+                                                          Stroke="{StaticResource InkCyanBrush}"/>
+                                                </Border>
+                                                <TextBlock Style="{StaticResource CardKind}" Text="GUIDE"/>
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="Editor overview"/>
+                                            <TextBlock Style="{StaticResource CardBlurb}"
+                                                       Text="The outliner, asset browser, properties panel, and viewport tools."/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Caption}"
+                                               Text="CORE CONCEPTS" VerticalAlignment="Center"/>
+                                    <Rectangle Grid.Column="1" Style="{StaticResource SectionRule}"/>
+                                </Grid>
+
+                                <UniformGrid Columns="3" Margin="0,0,0,20">
+                                    <Border Style="{StaticResource LearnCard}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="card:blueprint">
+                                        <StackPanel Margin="18">
+                                            <Grid>
+                                                <Border Style="{StaticResource IconPlate}">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource IconNodes}"
+                                                          Stroke="{StaticResource InkVioletBrush}"/>
+                                                </Border>
+                                                <TextBlock Style="{StaticResource CardKind}" Text="GUIDE"/>
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="Blueprint system"/>
+                                            <TextBlock Style="{StaticResource CardBlurb}"
+                                                       Text="Wire up UI and gameplay in the node graph, then cook it to opcodes."/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource LearnCard}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="card:cpp-scripting">
+                                        <StackPanel Margin="18">
+                                            <Grid>
+                                                <Border Style="{StaticResource IconPlate}">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource IconChip}"
+                                                          Stroke="{StaticResource VerdigrisBrush}"/>
+                                                </Border>
+                                                <TextBlock Style="{StaticResource CardKind}" Text="GUIDE"/>
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="Native C++ scripting"/>
+                                            <TextBlock Style="{StaticResource CardBlurb}"
+                                                       Text="Write logic in C++, compile to GameLogic.dll, hot-reload without restarting."/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <Border Style="{StaticResource LearnCard}" Margin="0,0,0,12"
+                                            MouseLeftButtonDown="Learn_Click" Tag="card:pbr-materials">
+                                        <StackPanel Margin="18">
+                                            <Grid>
+                                                <Border Style="{StaticResource IconPlate}">
+                                                    <Path Style="{StaticResource Icon}" Data="{StaticResource IconSphere}"
+                                                          Stroke="{StaticResource InkBronzeBrush}"/>
+                                                </Border>
+                                                <TextBlock Style="{StaticResource CardKind}" Text="GUIDE"/>
+                                            </Grid>
+                                            <TextBlock Style="{StaticResource CardTitle}" Text="PBR materials"/>
+                                            <TextBlock Style="{StaticResource CardBlurb}"
+                                                       Text="Albedo, roughness, metallic, and normal maps in the material editor."/>
+                                        </StackPanel>
+                                    </Border>
+                                </UniformGrid>
+
+                                <Grid Margin="0,0,0,14">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Grid.Column="0" Style="{StaticResource Caption}"
+                                               Text="REFERENCE" VerticalAlignment="Center"/>
+                                    <Rectangle Grid.Column="1" Style="{StaticResource SectionRule}"/>
+                                </Grid>
+
+                                <StackPanel>
+                                    <Border Style="{StaticResource DocRow}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="doc:api-reference">
+                                        <Grid Margin="16,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Style="{StaticResource IconPlate}"
+                                                    Width="30" Height="30" VerticalAlignment="Center">
+                                                <Path Style="{StaticResource Icon}" Data="{StaticResource IconBook}"
+                                                      Stroke="{StaticResource BrassBrush}"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                                <TextBlock Text="CatalystAPI reference" FontSize="13.5"
+                                                           FontWeight="SemiBold" Foreground="{StaticResource ChalkBrush}"/>
+                                                <TextBlock Style="{StaticResource CardBlurb}" Margin="0,3,0,0"
+                                                           Text="The native script API: transforms, physics, input, audio, UI events, save data."/>
+                                            </StackPanel>
+                                            <Path Grid.Column="2" Style="{StaticResource Icon}"
+                                                  Data="{StaticResource IconArrow}"
+                                                  Stroke="{StaticResource SlateBrush}"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Style="{StaticResource DocRow}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="doc:physics">
+                                        <Grid Margin="16,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Style="{StaticResource IconPlate}"
+                                                    Width="30" Height="30" VerticalAlignment="Center">
+                                                <Path Style="{StaticResource Icon}" Data="{StaticResource IconFlask}"
+                                                      Stroke="{StaticResource InkCyanBrush}"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                                <TextBlock Text="Physics system" FontSize="13.5"
+                                                           FontWeight="SemiBold" Foreground="{StaticResource ChalkBrush}"/>
+                                                <TextBlock Style="{StaticResource CardBlurb}" Margin="0,3,0,0"
+                                                           Text="Rigidbodies, collider shapes, velocity integration, gravity, raycasting."/>
+                                            </StackPanel>
+                                            <Path Grid.Column="2" Style="{StaticResource Icon}"
+                                                  Data="{StaticResource IconArrow}"
+                                                  Stroke="{StaticResource SlateBrush}"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Style="{StaticResource DocRow}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="doc:blueprint-nodes">
+                                        <Grid Margin="16,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Style="{StaticResource IconPlate}"
+                                                    Width="30" Height="30" VerticalAlignment="Center">
+                                                <Path Style="{StaticResource Icon}" Data="{StaticResource IconNodes}"
+                                                      Stroke="{StaticResource InkVioletBrush}"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                                <TextBlock Text="Blueprint node library" FontSize="13.5"
+                                                           FontWeight="SemiBold" Foreground="{StaticResource ChalkBrush}"/>
+                                                <TextBlock Style="{StaticResource CardBlurb}" Margin="0,3,0,0"
+                                                           Text="Every built-in node: SetText, SetColor, PlayAnimation, event handlers, logic gates."/>
+                                            </StackPanel>
+                                            <Path Grid.Column="2" Style="{StaticResource Icon}"
+                                                  Data="{StaticResource IconArrow}"
+                                                  Stroke="{StaticResource SlateBrush}"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Style="{StaticResource DocRow}"
+                                            MouseLeftButtonDown="Learn_Click" Tag="doc:build-packaging">
+                                        <Grid Margin="16,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Style="{StaticResource IconPlate}"
+                                                    Width="30" Height="30" VerticalAlignment="Center">
+                                                <Path Style="{StaticResource Icon}" Data="{StaticResource IconBox}"
+                                                      Stroke="{StaticResource InkBronzeBrush}"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                                <TextBlock Text="Build and packaging" FontSize="13.5"
+                                                           FontWeight="SemiBold" Foreground="{StaticResource ChalkBrush}"/>
+                                                <TextBlock Style="{StaticResource CardBlurb}" Margin="0,3,0,0"
+                                                           Text="Pack assets into .cpak archives, stage CatalystPlayer.exe, write build manifests."/>
+                                            </StackPanel>
+                                            <Path Grid.Column="2" Style="{StaticResource Icon}"
+                                                  Data="{StaticResource IconArrow}"
+                                                  Stroke="{StaticResource SlateBrush}"/>
+                                        </Grid>
+                                    </Border>
+
+                                    <Border Style="{StaticResource DocRow}" Margin="0,0,0,0"
+                                            MouseLeftButtonDown="Learn_Click" Tag="doc:dx12">
+                                        <Grid Margin="16,14">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Style="{StaticResource IconPlate}"
+                                                    Width="30" Height="30" VerticalAlignment="Center">
+                                                <Path Style="{StaticResource Icon}" Data="{StaticResource IconMonitor}"
+                                                      Stroke="{StaticResource VerdigrisBrush}"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="16,0" VerticalAlignment="Center">
+                                                <TextBlock Text="DirectX 12 rendering pipeline" FontSize="13.5"
+                                                           FontWeight="SemiBold" Foreground="{StaticResource ChalkBrush}"/>
+                                                <TextBlock Style="{StaticResource CardBlurb}" Margin="0,3,0,0"
+                                                           Text="GPU-driven mesh passes, bindless resources, compute culling, shadow maps, post-process."/>
+                                            </StackPanel>
+                                            <Path Grid.Column="2" Style="{StaticResource Icon}"
+                                                  Data="{StaticResource IconArrow}"
+                                                  Stroke="{StaticResource SlateBrush}"/>
+                                        </Grid>
+                                    </Border>
+                                </StackPanel>
+
+                            </StackPanel>
+                        </ScrollViewer>
+                    </DockPanel>
+
+                    <!-- ──────────── MARKETPLACE ──────────── -->
+                    <DockPanel x:Name="MarketplaceContent" Visibility="Collapsed" LastChildFill="True">
+
+                        <Border DockPanel.Dock="Top"
+                                BorderBrush="{StaticResource RuleBrush}" BorderThickness="0,0,0,1"
+                                Padding="44,0" Height="76">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource SheetTitle}" Text="Marketplace"/>
+                                <TextBlock Style="{StaticResource Value}" FontSize="10"
+                                           Foreground="{StaticResource SlateBrush}"
+                                           Text="ASSETS, PLUGINS, TEMPLATES" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid>
+                            <Border BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                                    Background="{StaticResource PlateBrush}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Padding="60,46" MaxWidth="520" Margin="0,0,0,60"
+                                    SnapsToDevicePixels="True">
+                                <StackPanel>
+                                    <Border Style="{StaticResource IconPlate}" Width="40" Height="40"
+                                            HorizontalAlignment="Center">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconCart}"
+                                              Stroke="{StaticResource SlateBrush}"/>
+                                    </Border>
+                                    <TextBlock Text="The store is not open yet"
+                                               FontSize="17" FontWeight="SemiBold"
+                                               Foreground="{StaticResource ChalkBrush}"
+                                               HorizontalAlignment="Center" Margin="0,18,0,0"/>
+                                    <TextBlock Style="{StaticResource Body}" TextAlignment="Center"
+                                               Margin="0,8,0,0"
+                                               Text="Assets, plugins, and templates you buy or install will be listed here."/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DockPanel>
+
+                    <!-- ──────────── COMMUNITY ──────────── -->
+                    <DockPanel x:Name="CommunityContent" Visibility="Collapsed" LastChildFill="True">
+
+                        <Border DockPanel.Dock="Top"
+                                BorderBrush="{StaticResource RuleBrush}" BorderThickness="0,0,0,1"
+                                Padding="44,0" Height="76">
+                            <StackPanel VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource SheetTitle}" Text="Community"/>
+                                <TextBlock Style="{StaticResource Value}" FontSize="10"
+                                           Foreground="{StaticResource SlateBrush}"
+                                           Text="FORUMS, SHOWCASES, RELEASE NEWS" Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Grid>
+                            <Border BorderBrush="{StaticResource RuleBrush}" BorderThickness="1"
+                                    Background="{StaticResource PlateBrush}"
+                                    HorizontalAlignment="Center" VerticalAlignment="Center"
+                                    Padding="60,46" MaxWidth="520" Margin="0,0,0,60"
+                                    SnapsToDevicePixels="True">
+                                <StackPanel>
+                                    <Border Style="{StaticResource IconPlate}" Width="40" Height="40"
+                                            HorizontalAlignment="Center">
+                                        <Path Style="{StaticResource Icon}" Data="{StaticResource IconChat}"
+                                              Stroke="{StaticResource SlateBrush}"/>
+                                    </Border>
+                                    <TextBlock Text="Nothing to show yet"
+                                               FontSize="17" FontWeight="SemiBold"
+                                               Foreground="{StaticResource ChalkBrush}"
+                                               HorizontalAlignment="Center" Margin="0,18,0,0"/>
+                                    <TextBlock Style="{StaticResource Body}" TextAlignment="Center"
+                                               Margin="0,8,0,0"
+                                               Text="Forums, project showcases, and release news will appear here once the community site is live."/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </DockPanel>
+
+                </Grid>
+            </Grid>
+        </DockPanel>
+    </Border>
+</Window>

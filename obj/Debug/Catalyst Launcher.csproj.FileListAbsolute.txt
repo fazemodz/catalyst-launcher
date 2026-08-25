@@ -1,0 +1,36 @@
+C:\Users\Alex PC\source\repos\Catalyst\bin\x64\Debug\Catalyst Launcher.exe
+C:\Users\Alex PC\source\repos\Catalyst\bin\x64\Debug\Catalyst Launcher.deps.json
+C:\Users\Alex PC\source\repos\Catalyst\bin\x64\Debug\Catalyst Launcher.runtimeconfig.json
+C:\Users\Alex PC\source\repos\Catalyst\bin\x64\Debug\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\bin\x64\Debug\Catalyst Launcher.pdb
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Dialogs\NewProjectDialog.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\MainWindow.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\App.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Dialogs\NewProjectDialog.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\MainWindow.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\App.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher_MarkupCompile.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.g.resources
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.AssemblyInfoInputs.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.AssemblyInfo.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.csproj.CoreCompileInputs.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.sourcelink.json
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\refint\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.pdb
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher.genruntimeconfig.cache
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\ref\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\x64\Debug\Catalyst Launcher.exe
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\x64\Debug\Catalyst Launcher.deps.json
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\x64\Debug\Catalyst Launcher.runtimeconfig.json
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\x64\Debug\Catalyst Launcher.dll
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\bin\x64\Debug\Catalyst Launcher.pdb
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\LoginWindow.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\LoginWindow.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Dialogs\SettingsDialog.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Dialogs\SettingsDialog.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Dialogs\DocViewerWindow.baml
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Dialogs\DocViewerWindow.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\GeneratedInternalTypeHelper.g.cs
+C:\Users\Alex PC\source\repos\Catalyst\Catalyst Launcher\obj\Debug\Catalyst Launcher_MarkupCompile.lref
