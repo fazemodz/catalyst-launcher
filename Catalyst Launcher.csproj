@@ -7,6 +7,12 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
+
+        <!-- SdkPackageManager/ is a separate solution checked out inside this
+             folder. Without this exclude the SDK-style glob compiles its App and
+             Tests sources into the launcher (a second App.xaml, xunit attributes
+             with no xunit reference) and the build fails. -->
+        <DefaultItemExcludes>$(DefaultItemExcludes);SdkPackageManager\**</DefaultItemExcludes>
     </PropertyGroup>
 
     <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -19,5 +25,22 @@
         <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
         <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
     </PropertyGroup>
+
+    <!-- Engine version comparison runs through SdkPackageManager.Native.dll via
+         P/Invoke. The DLL is only there once the C++ project has been built, so
+         this copy is best-effort: without it the launcher falls back to the
+         managed comparer. -->
+    <Target Name="CopySdkPackageManagerNative" AfterTargets="Build">
+        <ItemGroup>
+            <SdkNativeCandidate Include="$(MSBuildProjectDirectory)\SdkPackageManager\x64\$(Configuration)\SdkPackageManager.Native.dll" />
+            <SdkNativeCandidate Include="$(MSBuildProjectDirectory)\SdkPackageManager\SdkPackageManager.Native\x64\$(Configuration)\SdkPackageManager.Native.dll" />
+            <SdkNativeCandidate Include="$(MSBuildProjectDirectory)\SdkPackageManager\SdkPackageManager.App\bin\$(Configuration)\net8.0-windows\SdkPackageManager.Native.dll" />
+            <SdkNativeFound Include="@(SdkNativeCandidate)" Condition="Exists('%(Identity)')" />
+        </ItemGroup>
+        <Copy SourceFiles="@(SdkNativeFound)"
+              DestinationFolder="$(OutDir)"
+              SkipUnchangedFiles="true"
+              Condition="'@(SdkNativeFound)' != ''" />
+    </Target>
 
 </Project>

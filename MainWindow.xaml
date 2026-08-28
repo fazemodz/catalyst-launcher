@@ -477,7 +477,8 @@
                     <Border Grid.Column="1" Style="{StaticResource BlockCell}">
                         <StackPanel VerticalAlignment="Center">
                             <TextBlock Style="{StaticResource BlockCaption}" Text="BUILD"/>
-                            <TextBlock Style="{StaticResource BlockValue}" Text="0.0.1 DEV"/>
+                            <TextBlock x:Name="EngineBuildLabel"
+                                       Style="{StaticResource BlockValue}" Text="0.0.1 DEV"/>
                         </StackPanel>
                     </Border>
 
@@ -779,7 +780,8 @@
                                                     Content="New project" Click="NewProject_Click"/>
                                             <Button x:Name="NewsReadReleaseNotes"
                                                     Style="{StaticResource GhostButton}"
-                                                    Margin="10,0,0,0" Content="Read release notes"/>
+                                                    Margin="10,0,0,0" Content="Read release notes"
+                                                    Click="ReleaseNotes_Click"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </Border>

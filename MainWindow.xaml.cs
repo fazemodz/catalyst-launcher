@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
@@ -23,6 +24,9 @@ public partial class MainWindow : Window
     private bool        _listView;
     private int         _gridColumns = 4;
 
+    // One engine check per settings change, not per filter keystroke.
+    private EngineUpdateInfo? _engineUpdate;
+
     public MainWindow()
     {
         InitializeComponent();
@@ -33,26 +37,64 @@ public partial class MainWindow : Window
     {
         ApplySettings();
         ApplySessionState();
-        CheckForNews();
     }
 
     private void ApplySettings()
     {
         var s = SettingsService.Load();
         _gridColumns = s.GridColumns;
+
+        // The engine override may have moved, so the cached check is stale.
+        _engineUpdate = null;
+
         LoadProjects();
         ApplyViewMode();
+        UpdateBulletin();
     }
 
-    /// <summary>The bulletin only earns its space when there is news to carry.</summary>
-    private void CheckForNews()
+    /// <summary>
+    /// The bulletin only earns its space when there is news to carry, and the one
+    /// piece of news the launcher can source for itself is a pending engine update.
+    /// </summary>
+    private void UpdateBulletin()
     {
-        ReleaseText.Text = string.Empty;
-        NewsTitle.Text = string.Empty;
-        NewsSmallDescription.Text = string.Empty;
+        EngineUpdateInfo info = _engineUpdate ??= EngineUpdateService.Check();
+
+        if (!info.UpdateAvailable || info.Release == null)
+        {
+            ReleaseText.Text = string.Empty;
+            NewsTitle.Text = string.Empty;
+            NewsSmallDescription.Text = string.Empty;
+            NewsBTNMewProject.Visibility = Visibility.Collapsed;
+            NewsReadReleaseNotes.Visibility = Visibility.Collapsed;
+            HubNewsSection.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        EngineRelease release = info.Release;
+
+        string channel = string.IsNullOrWhiteSpace(release.Channel)
+            ? "ENGINE UPDATE"
+            : $"ENGINE UPDATE / {release.Channel.ToUpperInvariant()}";
+
+        ReleaseText.Text = release.Released.HasValue
+            ? $"{channel} / {release.Released.Value:dd MMM yyyy}".ToUpperInvariant()
+            : channel;
+
+        NewsTitle.Text = string.IsNullOrWhiteSpace(release.Title)
+            ? $"Catalyst {release.Version} is available"
+            : release.Title;
+
+        NewsSmallDescription.Text = string.IsNullOrWhiteSpace(release.Summary)
+            ? $"This machine is on {info.InstalledVersion}. Version {release.Version} is published on the update channel."
+            : release.Summary;
+
         NewsBTNMewProject.Visibility = Visibility.Collapsed;
-        NewsReadReleaseNotes.Visibility = Visibility.Collapsed;
-        HubNewsSection.Visibility = Visibility.Collapsed;
+        NewsReadReleaseNotes.Visibility = string.IsNullOrWhiteSpace(release.NotesUrl)
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+
+        HubNewsSection.Visibility = Visibility.Visible;
     }
 
     private void ApplySessionState()
@@ -270,14 +312,99 @@ public partial class MainWindow : Window
 
     private void UpdateEngineStatus()
     {
-        string? exe = ProjectService.FindCatalystExe();
-        bool found = exe != null;
+        EngineUpdateInfo info = _engineUpdate ??= EngineUpdateService.Check();
+        bool found = info.ExePath != null;
 
-        EnginePathStatusLabel.Text = exe ?? "Not located";
-        EnginePathStatusLabel.ToolTip = exe;
-        EngineStateLabel.Text = found ? "READY" : "NOT FOUND";
-        EngineStateLabel.Foreground = (Brush)FindResource(found ? "GraphiteBrush" : "RedlineBrush");
-        EngineLamp.Fill = (Brush)FindResource(found ? "VerdigrisBrush" : "RedlineBrush");
+        EnginePathStatusLabel.Text = info.ExePath ?? "Not located";
+        EnginePathStatusLabel.ToolTip = info.ExePath;
+
+        EngineBuildLabel.Text = found ? BuildLabelFor(info) : "\u2014";
+        EngineBuildLabel.ToolTip = BuildTooltipFor(info);
+
+        EngineStateLabel.Text = info.StatusDisplay;
+        EngineStateLabel.Foreground = (Brush)FindResource(info.Status switch
+        {
+            EngineVersionStatus.NotInstalled    => "RedlineBrush",
+            EngineVersionStatus.UpdateAvailable => "BrassBrush",
+            _                                   => "GraphiteBrush",
+        });
+        EngineLamp.Fill = (Brush)FindResource(info.Status switch
+        {
+            EngineVersionStatus.NotInstalled    => "RedlineBrush",
+            EngineVersionStatus.UpdateAvailable => "BrassBrush",
+            _                                   => "VerdigrisBrush",
+        });
+    }
+
+    /// <summary>"1.0.0 DEV", with a question mark when nothing stamped a version.</summary>
+    private static string BuildLabelFor(EngineUpdateInfo info)
+    {
+        string version = info.InstalledVersion ?? "UNKNOWN";
+        if (info.InstalledVersionAssumed)
+            version += "?";
+
+        string? channel = info.Release?.Channel;
+        return string.IsNullOrWhiteSpace(channel)
+            ? version
+            : $"{version} {channel.ToUpperInvariant()}";
+    }
+
+    private static string BuildTooltipFor(EngineUpdateInfo info)
+    {
+        if (info.ExePath == null)
+            return "No Catalyst.exe was found.";
+
+        var lines = new List<string>
+        {
+            $"Installed: {info.InstalledVersion}" +
+            (info.InstalledVersionAssumed
+                ? " (assumed \u2014 the engine binary carries no version)"
+                : ""),
+
+            info.AvailableVersion != null
+                ? $"Channel: {info.AvailableVersion}"
+                : $"Channel: no {EngineUpdateService.ManifestFileName} found",
+
+            $"Compared by: {info.Backend}"
+        };
+
+        return string.Join(Environment.NewLine, lines);
+    }
+
+    private void ReleaseNotes_Click(object sender, RoutedEventArgs e)
+    {
+        string? notes = _engineUpdate?.Release?.NotesUrl;
+        if (string.IsNullOrWhiteSpace(notes))
+            return;
+
+        // A URL goes to the browser; a Markdown file opens in the built-in viewer.
+        if (notes.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+            notes.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+        {
+            try
+            {
+                Process.Start(new ProcessStartInfo { FileName = notes, UseShellExecute = true });
+            }
+            catch
+            {
+                MessageBox.Show(this, "Could not open the release notes.",
+                    "Release Notes", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            return;
+        }
+
+        string path = Path.IsPathRooted(notes)
+            ? notes
+            : Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, notes));
+
+        if (!File.Exists(path))
+        {
+            MessageBox.Show(this, $"Release notes not found:{Environment.NewLine}{path}",
+                "Release Notes", MessageBoxButton.OK, MessageBoxImage.Warning);
+            return;
+        }
+
+        DocViewerWindow.Show(_engineUpdate?.Release?.Title ?? "Release Notes", path, this);
     }
 
     private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
