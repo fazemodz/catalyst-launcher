@@ -129,6 +129,39 @@ To get the native path, build it first:
 msbuild "SdkPackageManager/SdkPackageManager.Native/SdkPackageManager.Native.vcxproj" -p:Configuration=Debug -p:Platform=x64
 ```
 
+### A second native boundary: reading the engine's own project data
+
+The Projects tab calls into the actual engine, not a prototype. `Catalyst.exe`
+is an `Application` and can't be P/Invoked into directly, so `Catalyst.Native.dll`
+— a small `DynamicLibrary` project at `Catalyst/Catalyst.Native/` — exports a C
+API over the same parsing code the engine's `ParseProjectFile` uses:
+
+```
+ProjectService.GetRecentProjects()
+      ↓
+EngineProjectInterop.TryParseProjectFile
+      ↓
+EngineNativeMethods (DllImport) → Catalyst.Native.dll → ParseCatalystProjectInfo()
+                                                                ↓
+                                          Lib/ProjectFields.cpp (ParseProjectFieldsFromJson)
+                                                                ↑
+                                     also called from Catalyst.vcxproj's Launcher.cpp
+```
+
+`Lib/ProjectFields.cpp` is compiled into **both** `Catalyst.vcxproj` and
+`Catalyst.Native.vcxproj` — the field-extraction regexes exist once, not twice.
+`EngineProjectInterop` catches `DllNotFoundException` the same way
+`VersionInterop` does: without the DLL, `ProjectService` just falls back to
+the filename it already used. When the call succeeds, the card and list-row
+name comes from the file's real `ProjectName` instead of a filename guess, and
+hovering it shows the parsed `EngineVersion`.
+
+Unlike `SdkPackageManager.Native.dll`, `Catalyst.Native` is a project in this
+same solution (`Catalyst.slnx`) and shares the engine's `OutDir`, so building
+through the solution — not the individual `.vcxproj` — puts it directly in
+`bin\x64\{Debug,Release}\` next to `Catalyst.exe` and the launcher; no copy
+target is needed.
+
 ### A note on the checkout
 
 `SdkPackageManager/` is a **separate git repository checked out inside this
@@ -177,11 +210,17 @@ Models/               AppSettings, ProjectItem, TemplateItem,
                       EngineRelease, EngineUpdateInfo, EngineVersionStatus
 Services/             ProjectService, SettingsService, UserSessionService,
                       LoginService, EngineUpdateService
-Interop/              IVersionInterop and its two backends, plus the
-                      NativeMethods P/Invoke declarations
+Interop/              IVersionInterop and its two backends, the version-compare
+                      P/Invoke declarations, and EngineProjectInterop, which
+                      P/Invokes Catalyst.Native.dll for project-file parsing
 UI/Tracking.cs        Attached property for TextBlock letter-spacing
-SdkPackageManager/    Separate repo; excluded from the build, supplies the native DLL
+SdkPackageManager/    Separate repo; excluded from the build, supplies the version-compare DLL
 ```
+
+`Catalyst.Native.dll` itself lives outside this folder, at
+`Catalyst/Catalyst.Native/` next to the engine project — see
+[A second native boundary](#a-second-native-boundary-reading-the-engines-own-project-data)
+above.
 
 ### Theme
 

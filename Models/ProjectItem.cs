@@ -27,6 +27,17 @@ public class ProjectItem
     public bool     Exists       { get; set; }
     public int?     TagOverride  { get; set; }
 
+    /// <summary>
+    /// EngineVersion as the engine's own parser read it out of the
+    /// .CatalystProj file, via <see cref="Interop.EngineProjectInterop"/>. Null
+    /// when Catalyst.Native.dll isn't present or the field wasn't found.
+    /// </summary>
+    public string?  EngineVersion { get; set; }
+
+    public string EngineVersionTooltip => EngineVersion is null or "" or "Unknown"
+        ? Path
+        : $"Engine {EngineVersion}\n{Path}";
+
     public string DisplayPath => System.IO.Path.GetDirectoryName(Path) ?? Path;
     public string DateLabel   => LastModified == default ? "Unknown date" : LastModified.ToString("MMM d, yyyy");
 

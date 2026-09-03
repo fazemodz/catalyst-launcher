@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Catalyst Launcher")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a072a756aaf0f45ae3ff4f18a8bc0c2232d25b1")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+f9484663ab23d6f6b5fb22511528bb663d160b26")]
 [assembly: System.Reflection.AssemblyProductAttribute("Catalyst Launcher")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Catalyst Launcher")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

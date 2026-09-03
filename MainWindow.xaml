@@ -202,6 +202,7 @@
                         <StackPanel Grid.Column="1" Margin="13,0,10,0"
                                     VerticalAlignment="Top">
                             <TextBlock Text="{Binding Name}"
+                                       ToolTip="{Binding EngineVersionTooltip}"
                                        FontSize="14.5" FontWeight="SemiBold"
                                        Foreground="{StaticResource ChalkBrush}"
                                        TextTrimming="CharacterEllipsis"/>
@@ -313,6 +314,7 @@
                     </Border>
 
                     <TextBlock Grid.Column="1" Text="{Binding Name}"
+                               ToolTip="{Binding EngineVersionTooltip}"
                                Margin="14,0,12,0" VerticalAlignment="Center"
                                FontSize="14" FontWeight="SemiBold"
                                Foreground="{StaticResource ChalkBrush}"

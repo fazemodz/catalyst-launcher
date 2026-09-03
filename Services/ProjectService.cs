@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.IO;
 using System.Text;
+using Catalyst_Launcher.Interop;
 using Catalyst_Launcher.Models;
 
 namespace Catalyst_Launcher.Services;
@@ -45,12 +46,23 @@ public static class ProjectService
 
             bool exists = File.Exists(path);
             string name = Path.GetFileNameWithoutExtension(path);
+            string? engineVersion = null;
             DateTime lastModified = default;
 
             if (exists)
             {
                 try { lastModified = File.GetLastWriteTime(path); }
                 catch { /* ignore */ }
+
+                // The engine's own parser is the source of truth for what's in
+                // the file; the filename is only a fallback for when
+                // Catalyst.Native.dll hasn't been built yet.
+                if (EngineProjectInterop.TryParseProjectFile(path, out EngineProjectInfo info))
+                {
+                    if (!string.IsNullOrWhiteSpace(info.ProjectName))
+                        name = info.ProjectName;
+                    engineVersion = info.EngineVersion;
+                }
             }
 
             items.Add(new ProjectItem
@@ -59,7 +71,8 @@ public static class ProjectService
                 Path = path,
                 LastModified = lastModified,
                 Exists = exists,
-                TagOverride = tagOverride
+                TagOverride = tagOverride,
+                EngineVersion = engineVersion
             });
         }
 
